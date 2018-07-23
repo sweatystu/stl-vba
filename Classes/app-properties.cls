@@ -23,6 +23,7 @@ Private Sub SetDefaultSettings()
     Me.SetEvents True
     Me.SetSheetsInNew 1
     Me.ScreenUpdating False
+    Exit Sub
 End Sub
 
 
@@ -30,111 +31,132 @@ End Sub
 ' Initialisation
 Private Sub Class_Initialize()
 ' Record original status of application variables
-    Me.RecordOriginalSettings
+    If Not RecordOriginalSettings Then Err.Raise custErr.ApplicationError, "cls-AppProperties - Class_Initialize()", "The original settings could not be recorded"
 ' Apply predetermined variables to speed up macro running
-    Me.SetDefaultSettings
+    If Not SetDefaultSettings Then Err.Raise custErr.ApplicationError, "cls-AppProperties - Class_Initialize()", "The default settings could not be set"
 End Sub
 
 ' Termination
 Private Sub Class_Terminate()
 ' Remove variables to return to original state
-    Me.SetOriginalSettings
+    If Not SetOriginalSettings Then Err.Raise custError.ApplicationError, "cls-AppProperties - Class_Terminate()", "The original settings could not be returned"
 End Sub
 
 
 ' Record the original settings
-Private Sub RecordOriginalSettings()
+Private Function RecordOriginalSettings() As Boolean
     vOrigNoSheets = Application.SheetsInNewWorkbook
     vOrigCalcOptions = Application.Calculation
     vOrigEvents = Application.EnableEvents
     vOrigAlerts = Application.DisplayAlerts
     vOrigScreenUpdate = Application.ScreenUpdating
-End Sub
+
+    RecordOriginalSettings = True
+End Function
 
 ' Apply original settings
-Sub SetOriginalSettings()
+Function SetOriginalSettings() As Boolean
     Me.SetSheetsInNew vOrigNoSheets
     Me.SetCalculationMode vOrigCalcOptions
     Me.SetEvents vOrigEvents
     Me.SetAlerts vOrigAlerts
     Me.SetScreenUpdate vOrigScreenUpdate
-End Sub
+
+    SetOriginalSettings = True
+End Function
 
 ' Roll back all settings to previous
-Sub PreviousAllSettings()
+Function PreviousAllSettings() As Boolean
     Me.PreviousSheetsInNew
     Me.PreviousCalculationMode
     Me.PreviousAlerts
     Me.PreviousEvents
     Me.PreviousScreenUpdate
-End Sub
+
+    PreviousAllSettings = True
+End Function
 
 
 ' Sheets in New Workbook
-Sub SetSheetsInNew(ByVal i As Long)
+Function SetSheetsInNew(ByVal i As Long) As Boolean
     ' Record Previous sheets in workbook
     vPrevNoSheets = Application.SheetsInNewWorkbook
     ' Apply new number of sheets in a workbook
     Application.SheetsInNewWorkbook = i
-End Sub
+
+    SetSheetsInNew = True
+End Function
 
 ' Previous Sheets in New Workbook
-Sub PreviousSheetsInNew()
+Function PreviousSheetsInNew() As Boolean
     Me.SetSheetsInNew vPrevNoSheets
-End Sub
+    PreviousSheetsInNew = True
+End Function
 
 
 ' Calculation Mode
-Sub SetCalculationMode(ByVal vl As XlCalculation)
+Function SetCalculationMode(ByVal vl As XlCalculation) As Boolean
     ' Record previous calculation mode
     vPrevCalcOptions = Application.Calculation
     ' Apply new calculation mode
     Application.Calculation = vl
-End Sub
+
+    SetCalculationMode = True
+End Function
 
 ' Previous Calculation Mode
-Sub PreviousCalculationMode()
+Function PreviousCalculationMode() As Boolean
     Me.SetCalculationMode vPrevCalcOptions
-End Sub
+    PreviousCalculationMode = True
+End Function
 
 
 ' Events
-Sub SetEvents(ByVal TF As Boolean)
+Function SetEvents(ByVal TF As Boolean) As Boolean
     ' Record previous event status
     vPrevEvents = Application.EnableEvents
     ' Apply new event status
     Application.EnableEvents = TF
-End Sub
+
+    SetEvents = True
+End Function
 
 ' Previous Event Mode
-Sub PreviousEvents()
+Function PreviousEvents() As Boolean
     Me.SetEvents vPrevEvents
-End Sub
+    PreviousEvents = True
+End Function
 
 
 ' Alerts
-Sub SetAlerts(ByVal TF As Boolean)
+Function SetAlerts(ByVal TF As Boolean) As Boolean
     ' Record previous alert status
     vPrevAlerts = Application.DisplayAlerts
     ' Apply new alert status
     Application.DisplayAlerts = TF
-End Sub
+
+    SetAlerts = True
+End Function
 
 ' Previous Alert Mode
-Sub PreviousAlerts()
+Function PreviousAlerts() As Boolean
     Me.SetAlerts vPrevAlerts
-End Sub
+    PreviousAlerts = True
+End Function
 
 
 ' Screen Updating
-Sub SetScreenUpdate(ByVal TF As Boolean)
+Function SetScreenUpdate(ByVal TF As Boolean) As Boolean
     ' Record previous screen updating status
     vPrevScreenUpdate = Application.ScreenUpdating
     ' Apply new screen updating status
     Application.ScreenUpdating = TF
-End Sub
+
+    SetScreenUpdate = True
+End Function
 
 ' Previous Screen Updating Mode
-Sub PreviousScreenUpdate()
+Function PreviousScreenUpdate() As Boolean
     Me.SetScreenUpdate vPrevScreenUpdate
-End Sub
+    PreviousScreenUpdate = True
+End Function
