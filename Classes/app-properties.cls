@@ -18,145 +18,233 @@ Private vPrevScreenUpdate As Boolean
 ' Default settings to be applied on initialise
 ' Change this procedure to alter default behaviour
 Private Sub SetDefaultSettings()
+    On Error GoTo ErrorHandle
+    
     Me.SetCalculationMode XlCalculation.xlCalculationManual
     Me.SetAlerts False
-    Me.SetEvents True
+    Me.SetEvents False
     Me.SetSheetsInNew 1
-    Me.ScreenUpdating False
+    Me.SetScreenUpdate False
     Exit Sub
+    
+ErrorHandle:
+    custErr.RaiseError "cAppProperties - SetDefaultSettings()"
 End Sub
 
 
 
 ' Initialisation
+Sub Initialise()
+' Empty procedure
+' Call this procedure to force the class to initialise
+    Class_Initialize
+End Sub
+
 Private Sub Class_Initialize()
+    On Error GoTo ErrorHandle
+    
 ' Record original status of application variables
-    If Not RecordOriginalSettings Then Err.Raise custErr.ApplicationError, "cls-AppProperties - Class_Initialize()", "The original settings could not be recorded"
+    RecordOriginalSettings
 ' Apply predetermined variables to speed up macro running
-    If Not SetDefaultSettings Then Err.Raise custErr.ApplicationError, "cls-AppProperties - Class_Initialize()", "The default settings could not be set"
+    SetDefaultSettings
+    Exit Sub
+    
+ErrorHandle:
+    custErr.RaiseError "cAppProperties - Class_Initialize()"
 End Sub
 
 ' Termination
 Private Sub Class_Terminate()
+    On Error GoTo ErrorHandle
+    
 ' Remove variables to return to original state
-    If Not SetOriginalSettings Then Err.Raise custError.ApplicationError, "cls-AppProperties - Class_Terminate()", "The original settings could not be returned"
+    SetOriginalSettings
+    Exit Sub
+    
+ErrorHandle:
+    custErr.RaiseError "cAppProperties - Class_Terminate()"
 End Sub
 
 
 ' Record the original settings
-Private Function RecordOriginalSettings() As Boolean
+Private Sub RecordOriginalSettings()
+    On Error GoTo ErrorHandle
+    
     vOrigNoSheets = Application.SheetsInNewWorkbook
     vOrigCalcOptions = Application.Calculation
     vOrigEvents = Application.EnableEvents
     vOrigAlerts = Application.DisplayAlerts
     vOrigScreenUpdate = Application.ScreenUpdating
-
-    RecordOriginalSettings = True
-End Function
+    
+    Exit Sub
+    
+ErrorHandle:
+    custErr.RaiseError "cAppProperties - RecordOriginalSettings()"
+End Sub
 
 ' Apply original settings
-Function SetOriginalSettings() As Boolean
+Sub SetOriginalSettings()
+    On Error GoTo ErrorHandle
+    
     Me.SetSheetsInNew vOrigNoSheets
     Me.SetCalculationMode vOrigCalcOptions
     Me.SetEvents vOrigEvents
     Me.SetAlerts vOrigAlerts
     Me.SetScreenUpdate vOrigScreenUpdate
-
-    SetOriginalSettings = True
-End Function
+    
+    Exit Sub
+    
+ErrorHandle:
+    custErr.RaiseError "cAppProperties - SetOriginalSettings()"
+End Sub
 
 ' Roll back all settings to previous
-Function PreviousAllSettings() As Boolean
+Sub PreviousAllSettings()
+    On Error GoTo ErrorHandle
+    
     Me.PreviousSheetsInNew
     Me.PreviousCalculationMode
     Me.PreviousAlerts
     Me.PreviousEvents
     Me.PreviousScreenUpdate
-
-    PreviousAllSettings = True
-End Function
+    
+    Exit Sub
+    
+ErrorHandle:
+    custErr.RaiseError "cAppProperties - PreviousAllSettings()"
+End Sub
 
 
 ' Sheets in New Workbook
-Function SetSheetsInNew(ByVal i As Long) As Boolean
+Sub SetSheetsInNew(ByVal i As Long)
+    On Error GoTo ErrorHandle
+    
     ' Record Previous sheets in workbook
     vPrevNoSheets = Application.SheetsInNewWorkbook
     ' Apply new number of sheets in a workbook
     Application.SheetsInNewWorkbook = i
-
-    SetSheetsInNew = True
-End Function
+    
+    Exit Sub
+    
+ErrorHandle:
+    custErr.RaiseError "cAppProperties - SetSheetsInNew()"
+End Sub
 
 ' Previous Sheets in New Workbook
-Function PreviousSheetsInNew() As Boolean
+Sub PreviousSheetsInNew()
+    On Error GoTo ErrorHandle
+    
     Me.SetSheetsInNew vPrevNoSheets
-    PreviousSheetsInNew = True
-End Function
+    Exit Sub
+    
+ErrorHandle:
+    custErr.RaiseError "cAppProperties - PreviousSheetsInNew()"
+End Sub
 
 
 ' Calculation Mode
-Function SetCalculationMode(ByVal vl As XlCalculation) As Boolean
+Sub SetCalculationMode(ByVal vl As XlCalculation)
+    On Error GoTo ErrorHandle
+    
     ' Record previous calculation mode
     vPrevCalcOptions = Application.Calculation
     ' Apply new calculation mode
     Application.Calculation = vl
-
-    SetCalculationMode = True
-End Function
+    
+    Exit Sub
+    
+ErrorHandle:
+    custErr.RaiseError "cAppProperties - SetCalculationMode()"
+End Sub
 
 ' Previous Calculation Mode
-Function PreviousCalculationMode() As Boolean
+Sub PreviousCalculationMode()
+    On Error GoTo ErrorHandle
+    
     Me.SetCalculationMode vPrevCalcOptions
-    PreviousCalculationMode = True
-End Function
+    Exit Sub
+    
+ErrorHandle:
+    custErr.RaiseError "cAppProperties - PreviousCalculationMode()"
+End Sub
 
 
 ' Events
-Function SetEvents(ByVal TF As Boolean) As Boolean
+Sub SetEvents(ByVal TF As Boolean)
+    On Error GoTo ErrorHandle
+    
     ' Record previous event status
     vPrevEvents = Application.EnableEvents
     ' Apply new event status
     Application.EnableEvents = TF
-
-    SetEvents = True
-End Function
+    
+    Exit Sub
+    
+ErrorHandle:
+    custErr.RaiseError "cAppProperties - SetEvents()"
+End Sub
 
 ' Previous Event Mode
-Function PreviousEvents() As Boolean
+Sub PreviousEvents()
+    On Error GoTo ErrorHandle
+    
     Me.SetEvents vPrevEvents
-    PreviousEvents = True
-End Function
+    Exit Sub
+    
+ErrorHandle:
+    custErr.RaiseError "cAppProperties - PreviousEvents()"
+End Sub
 
 
 ' Alerts
-Function SetAlerts(ByVal TF As Boolean) As Boolean
+Sub SetAlerts(ByVal TF As Boolean)
+    On Error GoTo ErrorHandle
+    
     ' Record previous alert status
     vPrevAlerts = Application.DisplayAlerts
     ' Apply new alert status
     Application.DisplayAlerts = TF
-
-    SetAlerts = True
-End Function
+    
+    Exit Sub
+    
+ErrorHandle:
+    custErr.RaiseError "cAppProperties - SetAlerts()"
+End Sub
 
 ' Previous Alert Mode
-Function PreviousAlerts() As Boolean
+Sub PreviousAlerts()
+    On Error GoTo ErrorHandle
+    
     Me.SetAlerts vPrevAlerts
-    PreviousAlerts = True
-End Function
+    Exit Sub
+    
+ErrorHandle:
+    custErr.RaiseError "cAppProperties - PreviousAlerts()"
+End Sub
 
 
 ' Screen Updating
-Function SetScreenUpdate(ByVal TF As Boolean) As Boolean
+Sub SetScreenUpdate(ByVal TF As Boolean)
+    On Error GoTo ErrorHandle
+    
     ' Record previous screen updating status
     vPrevScreenUpdate = Application.ScreenUpdating
     ' Apply new screen updating status
     Application.ScreenUpdating = TF
-
-    SetScreenUpdate = True
-End Function
+    
+    Exit Sub
+    
+ErrorHandle:
+    custErr.RaiseError "cAppProperties - SetScreenUpdate()"
+End Sub
 
 ' Previous Screen Updating Mode
-Function PreviousScreenUpdate() As Boolean
+Sub PreviousScreenUpdate()
+    On Error GoTo ErrorHandle
+    
     Me.SetScreenUpdate vPrevScreenUpdate
-    PreviousScreenUpdate = True
-End Function
+    Exit Sub
+    
+ErrorHandle:
+    custErr.RaiseError "cAppProperties - PreviousScreenUpdate()"
+End Sub

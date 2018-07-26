@@ -5,3 +5,4 @@ A collection of modules containing procedures to automate frequently used or com
 ## Modules
 
 - [Global](modules\global.md)
+- [Test](modules\test.md)

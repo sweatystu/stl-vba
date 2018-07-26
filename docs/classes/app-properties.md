@@ -1,32 +1,130 @@
 # App Properties
 
-This *class* is an instance of MS Excel. Used to quickly enforce known consistent behaviour in Excel when macros are run.
+- **Filename:** app-properties.cls
+- **Instance Name:** cAppProperties
+- **Prerequisits:** None
 
-This class uses initialisation and termination procedures to automatically apply known behaviours. Because of this, allowing procedures to be terminated with an `End` command must be discouraged. Errors should be caught and the termination procedure allowed to run.
+This class is initiated as a global variable (`app`) and can be used in any procedure.
 
-## Constants
-- vNoSheets - The number of sheets currently in a new workbook. This is temporarily overwritten with known behaviour.
-- vCalcOptions - Whether calculation are currently set to automatic or manual. This is temporarily overwritten with known behaviour.
-- vEvents - Whether events are currently listened for or not. This is temporarily overwritten with known behaviour.
-- vAlerts - Whether alerts are currently displayed or not. This is temporarily overwritten with known behaviour.
+## General Use
+If initialised, using `app.Initialise`, at the beginning of an automated process, standard defined settings will be applied. These settings will increase the speed at which an automated process is carried out (*e.g.* screen updating turned off) and standardise settings making it easier to write new macros (*e.g.* number of sheets in a new  workbook set to 1).
+
+``` VB
+Sub Example()
+    On Error GoTo ErrorHandle
+    app.Initialise
+
+    '''' Your Code Here ''''
+
+End Sub
+```
 
 ## Public Procedures
+These procedures can be called by procedures in other modules.
 
-### SheetsInNew(ByRef i As Long)
-Changes the number of sheets in a new workbook to the number passed as an argument.
+### Initialise()
+- **Prerequisits:** None
+- **Inputs:**
+- **Actions:**
+- **Outputs:**
 
+### SetOriginalSettings()
+- **Prerequisits:** None
+- **Inputs:**
+- **Actions:**
+- **Outputs:**
+
+### PreviousAllSettings()
+- **Prerequisits:** None
+- **Inputs:**
+- **Actions:**
+- **Outputs:**
+
+### SetSheetsInNew()
+- **Prerequisits:** None
+- **Inputs:**
+- **Actions:**
+- **Outputs:**
+
+### PreviousSheetsInNew()
+- **Prerequisits:** None
+- **Inputs:**
+- **Actions:**
+- **Outputs:**
+
+### SetCalculationMode()
+- **Prerequisits:** None
+- **Inputs:**
+- **Actions:**
+- **Outputs:**
+
+### PreviousCalculationMode()
+- **Prerequisits:** None
+- **Inputs:**
+- **Actions:**
+- **Outputs:**
+
+### SetEvents()
+- **Prerequisits:** None
+- **Inputs:**
+- **Actions:**
+- **Outputs:**
+
+### PreviousEvents()
+- **Prerequisits:** None
+- **Inputs:**
+- **Actions:**
+- **Outputs:**
+
+### SetAlerts()
+- **Prerequisits:** None
+- **Inputs:**
+- **Actions:**
+- **Outputs:**
+
+### PreviousAlerts()
+- **Prerequisits:** None
+- **Inputs:**
+- **Actions:**
+- **Outputs:**
+
+### SetScreenUpdate()
+- **Prerequisits:** None
+- **Inputs:**
+- **Actions:**
+- **Outputs:**
+
+### PreviousScreenUpdate()
+- **Prerequisits:** None
+- **Inputs:**
+- **Actions:**
+- **Outputs:**
 
 ## Private Procedures
+These procedures are only accessible to other procedures within the class.
+
+### SetDefaultSettings()
+- **Prerequisits:** None
+- **Inputs:**
+- **Actions:**
+- **Outputs:**
 
 ### Class_Initialize()
-Records the current values of various application variables and overwrites them with known behaviour.
-- Sets the number of sheets in a new workbook to 1
-- Sets *calculations* to *manual*
-- Disables *events*
-- Disables *alerts*
-- Turns off *screen updating*
+- **Prerequisits:** None
+- **Inputs:**
+- **Actions:**
+- **Outputs:**
 
 ### Class_Terminate()
-Returns the variables defined in `Class_Initialize()` to their original setting.
+- **Prerequisits:** None
+- **Inputs:**
+- **Actions:**
+- **Outputs:**
+
+### RecordOriginalSettings()
+- **Prerequisits:** None
+- **Inputs:**
+- **Actions:**
+- **Outputs:**
 
 

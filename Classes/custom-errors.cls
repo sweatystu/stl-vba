@@ -13,40 +13,37 @@ End Property
 
 
 
-Sub RaiseError(ByVal ErrorNum As Long, ByVal Description As String, ByVal src As String, ByVal procedure As String, Optional ByVal LineNum As Long = 0)
+Sub RaiseError(ByVal procedure As String)
     Dim vSource As String
-    If Left(src, Len(vMarker)) <> vMarker Then
+    If Left(Err.Source, Len(vMarker)) <> vMarker Then
         ' First error raised
-        If LineNum <> 0 Then
-            vSource = "Line Number: " & LineNum & vbNewLine
+        If Erl <> 0 Then
+            vSource = "Line Number: " & Erl & vbNewLine
         End If
         vSource = vMarker & vSource & procedure
     Else
-        vSource = src & vbNewLine & procedure
+        vSource = Err.Source & vbNewLine & procedure
     End If
 
-    Err.Raise ErrorNum, vSource, Description
+    Err.Raise Err.Number, vSource, Err.Description
 End Sub
 
 
-Sub DisplayError(ByVal src As String, ByVal desc As String, ByVal procedure As String, ByVal errNum As Long)
+Sub DisplayError(ByVal procedure As String)
     Dim msg As String
     msg = "An error occured:"
-    msg = msg & vbNewLine
-    Select Case errNum
+    msg = msg & vbNewLine & "-- "
+    Select Case Err.Number
         Case Me.GenericError
             msg = msg & "Custom Generic Error"
         Case Else
             msg = msg & "Non-Custom Error"
     End Select
-    msg = msg & vbNewLine
-    msg = msg & desc
+    msg = msg & " --" & vbNewLine
+    msg = msg & Err.Description
     msg = msg & vbNewLine & vbNewLine
     msg = msg & "Error location is:"
     msg = msg & vbNewLine
-    msg = msg & Replace(src, vMarker, "") & vbNewLine & procedure
+    msg = msg & Replace(Err.Source, vMarker, "") & vbNewLine & procedure
     MsgBox msg, Title:="Error"
 End Sub
-
-
-
