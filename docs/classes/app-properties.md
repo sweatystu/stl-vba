@@ -24,107 +24,139 @@ These procedures can be called by procedures in other modules.
 
 ### Initialise()
 - **Prerequisits:** None
-- **Inputs:**
+- **Inputs:** None
 - **Actions:**
-- **Outputs:**
+    - `Class_Initialise()` - Private Procedure to initialise class
+- **Outputs:** None
 
 ### SetOriginalSettings()
 - **Prerequisits:** None
-- **Inputs:**
+- **Inputs:** None
 - **Actions:**
-- **Outputs:**
+    - Return app settings to original state
+- **Outputs:** None
 
 ### PreviousAllSettings()
 - **Prerequisits:** None
-- **Inputs:**
+- **Inputs:** None
 - **Actions:**
-- **Outputs:**
+    - Return app settings to the state before their last change through the class
+- **Outputs:** None
 
 ### SetSheetsInNew()
 - **Prerequisits:** None
 - **Inputs:**
+    - i As Long - *number of sheets in a new workbook*
 - **Actions:**
-- **Outputs:**
+    - Set the number of sheets in a new workbook to *i*
+- **Outputs:** None
 
 ### PreviousSheetsInNew()
 - **Prerequisits:** None
-- **Inputs:**
+- **Inputs:** None
 - **Actions:**
-- **Outputs:**
+    - Set the number of sheets in a new workbook to the number before the last change through the class
+- **Outputs:** None
 
 ### SetCalculationMode()
 - **Prerequisits:** None
 - **Inputs:**
+    - vl As xlCalculation - *Calculation mode (xlCalculationManual / xlCalculationAutomatic)*
 - **Actions:**
-- **Outputs:**
+    - Set the calculation mode to *vl*
+- **Outputs:** None
 
 ### PreviousCalculationMode()
 - **Prerequisits:** None
-- **Inputs:**
+- **Inputs:** None
 - **Actions:**
-- **Outputs:**
+    Set the calculation mode to the value before the last change through the class
+- **Outputs:** None
 
 ### SetEvents()
 - **Prerequisits:** None
 - **Inputs:**
+    - TF As Boolean - *True or False*
 - **Actions:**
-- **Outputs:**
+    - Set the *Events Enabled* setting to *TF*
+- **Outputs:** None
 
 ### PreviousEvents()
 - **Prerequisits:** None
-- **Inputs:**
+- **Inputs:** None
 - **Actions:**
-- **Outputs:**
+    - Set the *Events Enabled* setting to the value before the last change through the class
+- **Outputs:** None
 
 ### SetAlerts()
 - **Prerequisits:** None
 - **Inputs:**
+    - TF As Boolean - *True or False*
 - **Actions:**
-- **Outputs:**
+    - Set the *Display Alerts* setting to *TF*
+- **Outputs:** None
 
 ### PreviousAlerts()
 - **Prerequisits:** None
-- **Inputs:**
+- **Inputs:** None
 - **Actions:**
-- **Outputs:**
+    - Set the *Display Alerts* setting to the value before the last change through the class
+- **Outputs:** None
 
 ### SetScreenUpdate()
 - **Prerequisits:** None
 - **Inputs:**
+    - TF As Boolean - *True or False*
 - **Actions:**
-- **Outputs:**
+    - Set the *Screen Updating* setting to *TF*
+- **Outputs:** None
 
 ### PreviousScreenUpdate()
 - **Prerequisits:** None
-- **Inputs:**
+- **Inputs:** None
 - **Actions:**
-- **Outputs:**
+    - Set the *Screen Updating* setting to the value before the last change through the class
+- **Outputs:** None
 
 ## Private Procedures
 These procedures are only accessible to other procedures within the class.
 
 ### SetDefaultSettings()
 - **Prerequisits:** None
-- **Inputs:**
+- **Inputs:** None
 - **Actions:**
-- **Outputs:**
+    - `SetCalculationMode xlCalculationManual` - turn calculations to manual
+    - `SetAlerts False` - turn off alerts
+    - `SetEvents False` - turn off events
+    - `SetSheetsInNew 1` - set the number of sheets in a new workbook to 1
+    - `SetScreenUpdate False` - turn off screen updating
+- **Outputs:** None
 
 ### Class_Initialize()
 - **Prerequisits:** None
-- **Inputs:**
+- **Inputs:** None
 - **Actions:**
-- **Outputs:**
+    - `RecordOriginalSettings` - record the original settings
+    - `SetDefaultSettings` - set the default settings to speed up macros
+- **Outputs:** None
 
 ### Class_Terminate()
 - **Prerequisits:** None
-- **Inputs:**
+- **Inputs:** None
 - **Actions:**
-- **Outputs:**
+    - `SetOriginalSettings` - return settings to their original state
+- **Outputs:** None
 
 ### RecordOriginalSettings()
 - **Prerequisits:** None
-- **Inputs:**
+- **Inputs:** None
 - **Actions:**
-- **Outputs:**
+    - Record the original settings
+        - Number of sheets in a new workbook
+        - Calculation mode
+        - Events
+        - Alerts
+        - Screen Updating
+- **Outputs:** None
 
 
