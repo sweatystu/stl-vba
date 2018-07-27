@@ -11,5 +11,5 @@ All code is written assuming that the `app-properties` class and the `custom-err
 
 ## Contents
 - [Classes](docs/classes.md)
-- [Procedures](docs/procedures.md)
+- [Modules](docs/modules.md)
 
