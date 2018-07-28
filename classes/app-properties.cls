@@ -248,3 +248,4 @@ Sub PreviousScreenUpdate()
 ErrorHandle:
     custErr.RaiseError "cAppProperties - PreviousScreenUpdate()"
 End Sub
+
