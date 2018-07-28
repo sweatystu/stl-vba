@@ -12,7 +12,6 @@ End Property
 
 
 
-
 Sub RaiseError(ByVal procedure As String)
     Dim vSource As String
     If Left(Err.Source, Len(vMarker)) <> vMarker Then

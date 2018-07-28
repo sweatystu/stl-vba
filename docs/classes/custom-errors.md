@@ -81,4 +81,3 @@ custErr.GenericError | A generic error that doesn't fit into any other defined c
     - Produce string containing details of the raised error, including category (Number), source, and description
 - **Outputs:**
     - MessageBox containing details of the raised error
-
