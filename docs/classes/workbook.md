@@ -44,6 +44,23 @@ These procedures can be called by procedures in other modules.
     - Open workbook according to defined settings - accessed through `wb` property
 - **Outputs:** None
 
+### CloseWorkbook()
+- **Prerequisits:**
+    - Workbook must have been initiated by adding a new workbook or by opening an existing workbook
+- **Inputs:** None
+- **Actions:**
+    - Close workbook without saving
+- **Outputs:** None
+
+### SaveCloseWorkbook()
+- **Prerequisits:**
+    - Workbook must have been initiated by adding a new workbook or by opening an existing workbook
+- **Inputs:** None
+- **Actions:**
+    - Save workbook
+    - `CloseWorkbook()` - Close workbook without saving
+- **Outputs:** None
+
 ## Private Procedures
 These procedures can only be called by procedures within the workbook class.
 

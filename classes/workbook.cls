@@ -47,3 +47,24 @@ Sub OpenWorkbook(ByVal wb_location As String, Optional ByVal wb_readonly As Bool
 ErrorHandle:
     custErr.RaiseError "cWorkbook - OpenWorkbook()"
 End Sub
+
+
+' Close workbook
+Sub CloseWorkbook()
+    On Error GoTo ErrorHandle
+    Me.wb.Close False
+    Exit Sub
+ErrorHandle:
+    custErr.RaiseError "cWorkbook - CloseWorkbook()"
+End Sub
+
+
+' Save workbook and close
+Sub SaveCloseWorkbook()
+    On Error GoTo ErrorHandle
+    Me.wb.Save
+    Me.CloseWorkbook
+    Exit Sub
+ErrorHandle:
+    custErr.RaiseError "cWorkbook - SaveCloseWorkbook()"
+End Sub
