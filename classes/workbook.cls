@@ -53,6 +53,7 @@ End Sub
 Sub CloseWorkbook()
     On Error GoTo ErrorHandle
     Me.wb.Close False
+    Set vWB = Nothing
     Exit Sub
 ErrorHandle:
     custErr.RaiseError "cWorkbook - CloseWorkbook()"
@@ -64,6 +65,7 @@ Sub SaveCloseWorkbook()
     On Error GoTo ErrorHandle
     Me.wb.Save
     Me.CloseWorkbook
+    Set vWB = Nothing
     Exit Sub
 ErrorHandle:
     custErr.RaiseError "cWorkbook - SaveCloseWorkbook()"
