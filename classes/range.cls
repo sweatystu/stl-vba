@@ -86,6 +86,7 @@ End Property
 Property Get ColumnDataRange(ByVal ColName As String) As Range
     On Error GoTo ErrorHandle
     If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
+    If Not vHeader Then Err.Raise custErr.GenericError, Description:="The range does not have a header"
     If Me.HeaderRow >= Me.LastRow Then Err.Raise custErr.GenericError, Description:="There is no data in the range"
     If Not ColumnPresent(ColName) Then Err.Raise custErr.GenericError, Description:="The column " & ColName & " could not be found"
     Set ColumnDataRange = Intersect(Me.DataRange, Me.HeaderRange.Find(What:=ColName, LookIn:=XlFindLookIn.xlValues, LookAt:=XlLookAt.xlWhole, MatchCase:=True).EntireColumn)
