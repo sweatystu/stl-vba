@@ -1,25 +1,26 @@
 Option Explicit
 
 Private vRng As Range
-Private vHeader As Boolean
-Private vHeaderRow As Long
+Private vHeaderRange As cHeaderRange
+Private vDataRange As cDataRange
 
 
+' Definition
 
 Sub DefineRange(ByRef CellRange As Range, Optional HasHeaderRow As Boolean = True, Optional HeaderRow As Long = 1)
     On Error GoTo ErrorHandle
-    
     Set vRng = CellRange
-    vHeader = HasHeaderRow
-    If vHeader Then
-10      If vHeader < 1 Then Err.Raise custErr.GenericError, Description:="Range header-row number is not valid"
-20      If vHeader > vRng.Rows.Count Then Err.Raise custErr.GenericError, Description:="Range header-row number is not included within the range"
-        vHeaderRow = HeaderRow
+    If HasHeaderRow Then
+        If HeaderRow < 1 Then Err.Raise custErr.GenericError, Description:="The header-row number (" & HeaderRow & ") must be greater than 0"
+        If HeaderRow >= vRng.Rows.Count Then Err.Raise custErr.GenericError, Description:="The header-row number (" & HeaderRow & ") must be less than the number of rows in the data (" & vRng.Rows.Count & ")"
+        Set vHeaderRange = New cHeaderRange
+        Set vHeaderRange.HeaderRange = vRng.Rows(HeaderRow)
+        Set vDataRange = New cDataRange
+        Set vDataRange.DataRange = Intersect(vRng, vRng.Parent.Rows(vHeaderRange.SheetRow + 1 & ":" & vRng.Rows(vRng.Rows.Count).row))
     Else
-        vHeaderRow = 0
+        Set vHeaderRange = Nothing
+        Set vDataRange = vRng
     End If
-    
-    Exit Sub
 ErrorHandle:
     custErr.RaiseError "cRange - DefineRange()"
 End Sub
@@ -36,10 +37,10 @@ ErrorHandle:
     custErr.RaiseError "cRange - Get rng()"
 End Property
 
-Property Get sheet() As Worksheet
+Property Get Sheet() As Worksheet
     On Error GoTo ErrorHandle
     If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    Set sheet = vRng.Parent
+    Set Sheet = vRng.Parent
     Exit Property
 ErrorHandle:
     custErr.RaiseError "cRange - Get sheet()"
@@ -48,104 +49,47 @@ End Property
 Property Get wb() As Workbook
     On Error GoTo ErrorHandle
     If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    Set wb = Me.sheet.Parent
+    Set wb = Me.Sheet.Parent
     Exit Property
 ErrorHandle:
     custErr.RaiseError "cRange - Get sheet()"
 End Property
 
-
-' Sub-Ranges
-
-Property Get HeaderRange() As Range
+Property Get HeaderRange() As cHeaderRange
     On Error GoTo ErrorHandle
     If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    If Not vHeader Then Err.Raise custErr.GenericError, Description:="The range does not have a header"
-    Set HeaderRange = vRng.Rows(vHeaderRow)
+    If vHeaderRange Is Nothing Then Err.Raise custErr.GenericError, Description:="The range does not have a header"
+    Set HeaderRange = vHeaderRange
     Exit Property
 ErrorHandle:
     custErr.RaiseError "cRange - Get HeaderRange()"
 End Property
 
-Property Get DataRange() As Range
+Property Get DataRange() As cDataRange
     Dim rng As Range
     On Error GoTo ErrorHandle
     If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    If Not vHeader Then
-        Set rng = vRng
-    Else
-        If Me.HeaderRow >= Me.LastRow Then Err.Raise custErr.GenericError, Description:="There is no data in the range"
-        Set rng = Intersect(vRng, Me.sheet.Rows(Me.FirstRow & ":" & Me.LastRow))
-    End If
-    Set DataRange = rng
+    If vDataRange Is Nothing Then Err.Raise custErr.GenericError, Description:="The data range has not been defined"
+    Set DataRange = vDataRange
     Exit Property
 ErrorHandle:
     custErr.RaiseError "cRange - Get DataRange()"
 End Property
 
-Property Get ColumnDataRange(ByVal ColName As String) As Range
+
+
+' Column Properties
+
+Property Get NoColumns() As Long
     On Error GoTo ErrorHandle
     If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    If Not vHeader Then Err.Raise custErr.GenericError, Description:="The range does not have a header"
-    If Me.HeaderRow >= Me.LastRow Then Err.Raise custErr.GenericError, Description:="There is no data in the range"
-    If Not ColumnPresent(ColName) Then Err.Raise custErr.GenericError, Description:="The column " & ColName & " could not be found"
-    Set ColumnDataRange = Intersect(Me.DataRange, Me.HeaderRange.Find(What:=ColName, LookIn:=XlFindLookIn.xlValues, LookAt:=XlLookAt.xlWhole, MatchCase:=True).EntireColumn)
+    NoColumns = vRng.Columns.Count
     Exit Property
 ErrorHandle:
-    custErr.RaiseError "cRange - Get ColumnDataRange()"
+    custErr.RaiseError "cRange - Get NoColumns()"
 End Property
 
-Property Get ColumnHeaderCell(ByVal ColName As String) As Range
-    On Error GoTo ErrorHandle
-    If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    If Not vHeader Then Err.Raise custErr.GenericError, Description:="The range does not have a header"
-    If Not ColumnPresent(ColName) Then Err.Raise custErr.GenericError, Description:="The column " & ColName & " could not be found"
-    Set ColumnHeaderCell = Me.HeaderRange.Find(What:=ColName, LookIn:=XlFindLookIn.xlValues, LookAt:=XlLookAt.xlWhole, MatchCase:=True)
-    Exit Property
-ErrorHandle:
-    custErr.RaiseError "cRange - Get ColumnHeaderCell()"
-End Property
-
-
-
-' Properties
-
-Property Get HeaderRow() As Long
-    On Error GoTo ErrorHandle
-    If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    HeaderSheetRow = vRng.Rows(vHeaderRow).row
-    Exit Property
-ErrorHandle:
-    custErr.RaiseError "cRange - Get HeaderRow()"
-End Property
-
-
-Property Get FirstRow() As Long
-    Dim row As Long
-    On Error GoTo ErrorHandle
-    If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    If vHeader Then
-        If Me.HeaderRow >= Me.LastRow Then Err.Raise custErr.GenericError, Description:="There is no data in the range"
-        row = Me.HeaderRow + 1
-    Else
-        row = vRng.Rows(1).row
-    End If
-    FirstRow = row
-    Exit Property
-ErrorHandle:
-    custErr.RaiseError "cRange - Get FirstRow()"
-End Property
-
-Property Get LastRow() As Long
-    On Error GoTo ErrorHandle
-    If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    LastRow = vRng.Rows(vRng.Rows.Count).row
-    Exit Property
-ErrorHandle:
-    custErr.RaiseError "cRange - Get LastRow()"
-End Property
-
-Property Get FirstCol() As Long
+Property Get FirstColNum() As Long
     On Error GoTo ErrorHandle
     If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
     FirstCol = vRng.Columns(1).Column
@@ -154,7 +98,7 @@ ErrorHandle:
     custErr.RaiseError "cRange - Get FirstCol()"
 End Property
 
-Property Get LastCol() As Long
+Property Get LastColNum() As Long
     On Error GoTo ErrorHandle
     If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
     LastCol = vRng.Columns(vRng.Columns.Count).Column
@@ -166,7 +110,7 @@ End Property
 Property Get FirstColLetter() As String
     On Error GoTo ErrorHandle
     If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    FirstColLetter = Replace(Cells(1, Me.FirstCol).Address(RowAbsolute:=False, ColumnAbsolute:=False), 1, "")
+    FirstColLetter = Replace(Cells(1, Me.FirstColNum).Address(RowAbsolute:=False, ColumnAbsolute:=False), 1, "")
     Exit Property
 ErrorHandle:
     custErr.RaiseError "cRange - Get FirstColLetter()"
@@ -175,86 +119,48 @@ End Property
 Property Get LastColLetter() As String
     On Error GoTo ErrorHandle
     If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    LastColLetter = Replace(Cells(1, Me.LastCol).Address(RowAbsolute:=False, ColumnAbsolute:=False), 1, "")
+    LastColLetter = Replace(Cells(1, Me.LastColNum).Address(RowAbsolute:=False, ColumnAbsolute:=False), 1, "")
     Exit Property
 ErrorHandle:
     custErr.RaiseError "cRange - Get LastColLetter()"
 End Property
 
-Property Get NoColumns() As Long
+
+
+' Cells
+
+Property Get Cell_DataRowColName(ByVal DataRow As Long, ByVal ColName As Long) As Range
+    Dim result As Range
     On Error GoTo ErrorHandle
-    If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    NoColumns = vRng.Columns.Count
+    Set result = Intersect(Me.DataRange.RowInData(DataRow), Me.HeaderRange.WholeSheetCol(ColName))
+    If result Is Nothing Then Err.Raise custErr.GenericError, Description:="The row (" & DataRow & ") and column (" & ColName & ") combination has not been recognised"
+    Set Cell_DataRowColName = result
     Exit Property
 ErrorHandle:
-    custErr.RaiseError "cRange - Get NoColumns()"
+    custErr.RaiseError "cRange - Get Cell_DataRowColName()"
 End Property
 
-Property Get NoDataRows() As Long
+Property Get Cell_SheetRowColName(ByVal SheetRow As Long, ByVal ColName As Long) As Range
+    Dim result As Range
     On Error GoTo ErrorHandle
-    If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    NoDataRows = Me.DataRange.Rows.Count
+    Set result = Intersect(Me.Sheet.Rows(SheetRow), Me.HeaderRange.WholeSheetCol(ColName))
+    If result Is Nothing Then Err.Raise custErr.GenericError, Description:="The sheet row (" & SheetRow & ") and column (" & ColName & ") combination has not been recognised"
+    Set Cell_SheetRowColName = result
     Exit Property
 ErrorHandle:
-    custErr.RaiseError "cRange - Get NoDataRows()"
+    custErr.RaiseError "cRange - Get Cell_SheetRowColName()"
 End Property
 
-
-' Columns
-Private Function ColumnPresent(ByVal ColName As String) As Boolean
+Property Get Cell_UnderHeader(ByVal RowNum As Long, ByVal ColName As String) As Range
+    Dim result As Range
     On Error GoTo ErrorHandle
-    If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    If Not vHeader Then Err.Raise custErr.GenericError, Description:="The range does not have a header"
-    ColumnPresent = Not Me.HeaderRange.Find(What:=ColName, LookIn:=XlFindLookIn.xlValues, LookAt:=XlLookAt.xlWhole, MatchCase:=True) Is Nothing
-    Exit Function
-ErrorHandle:
-    custErr.RaiseError "cRange - ColumnPresent()"
-End Function
-
-Property Get ColumnNumber(ByVal ColName As String) As Long
-    On Error GoTo ErrorHandle
-    If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    If Not vHeader Then Err.Raise custErr.GenericError, Description:="The range does not have a header"
-    If Not ColumnPresent(ColName) Then Err.Raise custErr.GenericError, Description:="The column " & ColName & " could not be found"
-    ColumnNumber = Me.HeaderRange.Find(What:=ColName, LookIn:=XlFindLookIn.xlValues, LookAt:=XlLookAt.xlWhole, MatchCase:=True).Column
+    If RowNum < 1 Then Err.Raise custErr.GenericError, Description:="The row number given (" & RowNum & ") should be greater than 0"
+    Set result = Me.HeaderRange.ColCell(ColName).Offset(RowNum, 0)
+    If result Is Nothing Then Err.Raise custErr.GenericError, Description:="The sheet row (" & SheetRow & ") and column (" & ColName & ") combination has not been recognised"
+    Set Cell_UnderHeader = result
     Exit Property
 ErrorHandle:
-    custErr.RaiseError "cRange - Get ColumnNumber()"
-End Property
-
-Property Get ColumnLetter(ByVal ColName As String) As String
-    On Error GoTo ErrorHandle
-    If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    If Not vHeader Then Err.Raise custErr.GenericError, Description:="The range does not have a header"
-    If Not ColumnPresent(ColName) Then Err.Raise custErr.GenericError, Description:="The column " & ColName & " could not be found"
-    ColumnLetter = Replace(Cells(1, Me.ColumnNumber(ColName)).Address(RowAbsolute:=False, ColumnAbsolute:=False), 1, "")
-    Exit Property
-ErrorHandle:
-    custErr.RaiseError "cRange - Get ColumnLetter()"
-End Property
-
-
-' Data Cells
-Property Get DataCellInSheet(ByVal ColName As String, ByVal SheetRowNumber As Long) As Range
-    On Error GoTo ErrorHandle
-    If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    If Not vHeader Then Err.Raise custErr.GenericError, Description:="The range does not have a header"
-    If Not ColumnPresent(ColName) Then Err.Raise custErr.GenericError, Description:="The column " & ColName & " could not be found"
-    Set DataCellInSheet = Intersect(Me.HeaderRange.Find(What:=ColName, LookIn:=XlFindLookIn.xlValues, LookAt:=XlLookAt.xlWhole, MatchCase:=True).EntireColumn, Me.sheet.Rows(SheetRowNumber))
-    Exit Property
-ErrorHandle:
-    custErr.RaiseError "cRange - DataCellInSheet()"
-End Property
-
-Property Get DataCellUnderHeader(ByVal ColName As String, ByVal RowUnderHeader As Long) As Range
-    On Error GoTo ErrorHandle
-    If vRng Is Nothing Then Err.Raise custErr.GenericError, Description:="The range has not been defined"
-    If Not vHeader Then Err.Raise custErr.GenericError, Description:="The range does not have a header"
-    If Not ColumnPresent(ColName) Then Err.Raise custErr.GenericError, Description:="The column " & ColName & " could not be found"
-    Set DataCellUnderHeader = Me.ColumnHeaderCell(ColName).Offset(RowUnderHeader, 0)
-    Exit Property
-ErrorHandle:
-    custErr.RaiseError "cRange - DataCellUnderHeader()"
+    custErr.RaiseError "cRange - Get Cell_UnderHeader()"
 End Property
 
 
