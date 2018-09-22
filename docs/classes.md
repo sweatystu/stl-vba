@@ -9,5 +9,6 @@ Documentation | Filename | Classname
 [App Properties](classes/app-properties.md) | app-properties.cls | cAppProperties
 [Colours](classes/colours.md) | colours.cls | cColours
 [Custom Errors](classes/custom-errors.md) | custom-errors.cls | cCustomErrors
+[Range](classes/range.md) | range.cls | cRange
 [Workbook](classes/workbook.md) | workbook.cls | cWorkbook
 
