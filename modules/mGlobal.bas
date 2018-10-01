@@ -1,7 +1,10 @@
 Option Explicit
 
-' Variables to be used globally
-
+' Custom errors
+' Used to propogate and display errrors
 Public custErr As New cCustomErrors
-Public app As New cAppProperties
 
+' Application Properties
+' Used to optimise settings to speed up macros
+' Must be initialised by adding app.Initialise at the beginning of a macro
+Public app As New cAppProperties

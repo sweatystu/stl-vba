@@ -72,7 +72,7 @@ app.Initialise
 
 ### cColours
 
-Usually initialised within a class.
+*Usually* initialised within a class, but can be initialised as required.
 
 ``` VB
 Dim col As New cColours
@@ -86,9 +86,17 @@ Initialised via `mGlobal` module. In *daughter* procedures, use `custError.Raise
 
 Initialised in `cRange` class.
 
+### cGrey
+
+Initialised in `cColours` class.
+
 ### cHeaderRange
 
 Initialised in `cRange` class.
+
+### cIndividualColour
+
+Initialised in `cColours` class.
 
 ### cRange
 
