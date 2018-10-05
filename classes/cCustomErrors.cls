@@ -65,6 +65,6 @@ Sub DisplayError(ByVal procedure As String)
     msg = msg & "Error location is:"
     msg = msg & vbNewLine
     msg = msg & Replace(Err.Source, vMarker, "") & vbNewLine & procedure
-    MsgBox msg, Title:="Error"
+    MsgBox msg, vbMsgBoxStyle.vbOKOnly + vbMsgBoxStyle.vbExclamation, "Error"
 End Sub
 
