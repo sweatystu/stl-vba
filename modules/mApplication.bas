@@ -54,39 +54,21 @@ Sub ChangeSheetsInNew()
     ' Inputs: None
     ' Outputs: None
     Dim continue As Boolean
+    Dim vl As String
     On Error GoTo ErrorHandle
     continue = False
+    vl = ""
     While Not continue
-        continue = pvtChangeSheetsInNew(InputBox("How many sheets should be in a new workbook?", "New Workbook Sheets", Application.SheetsInNewWorkbook))
-        If Not continue Then
-            If MsgBox("A numeric value must be entered", vbOKCancel + vbInformation, "Insufficient data") = vbCancel Then Exit Sub
+        vl = InputBox("How many sheets should be in a new workbook?", "New Workbook Sheets", Application.SheetsInNewWorkbook)
+        If Len(vl) < 1 Then Exit Sub
+        If Not IsNumeric(vl) Then
+            MsgBox "The value entered must be numeric", vbOKOnly + vbInformation, "Value Error"
+        Else
+            app.SetSheetsInNew CLng(vl)
+            continue = True
         End If
     Wend
     Exit Sub
 ErrorHandle:
     custErr.DisplayError "mApplication - ChangeSheetsInNew()"
 End Sub
-
-' Private Functions
-Private Function pvtChangeSheetsInNew(ByVal vl As String) As Boolean
-    ' Description: Daughter Procedure
-    '               Changes the number of sheets in a new workbook to the given value
-    ' Dependencies:
-    '   - cAppProperties
-    ' Inputs:
-    '   - (As String)   vl  - Output of an InputBox describing the number of sheets to include in a new workbook
-    '                       - Value must be able to convert to an integer number
-    ' Outputs:
-    '   - (As Boolean) Whether the function has completed or not
-    On Error GoTo ErrorHandle
-    If Len(vl) < 1 Then GoTo FailFunction
-    If Not IsNumeric(vl) Then GoTo FailFunction
-    app.SetSheetsInNew CInt(vl)
-    pvtChangeSheetsInNew = True
-    Exit Function
-FailFunction:
-    pvtChangeSheetsInNew = False
-    Exit Function
-ErrorHandle:
-    custErr.RaiseError "mApplication - pvtChangeSheetsInNew()"
-End Function
