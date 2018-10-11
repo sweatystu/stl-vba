@@ -98,6 +98,14 @@ Initialised in `cRange` class.
 
 Initialised in `cColours` class.
 
+### cPivot
+Needs to be initialised and then the pivot table (as a PivotTable object) passed via the `Pivot` property.
+
+``` VB
+Dim pvt As New cPivot
+Set pvt.Pivot = ActiveSheets.PivotTables(1)
+```
+
 ### cRange
 
 Class needs to be initialised by running the `DefineRange` procedure and passing the required arguments:
