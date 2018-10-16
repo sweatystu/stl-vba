@@ -2,7 +2,7 @@ Option Explicit
 
 ' Dependencies: None
 
-' Private Variables
+' Private Constants
 Private Const vMarker As String = "!#!marker!#!" ' Marker to be used in error source - used to show that an error is being propogated
 
 ' Collection of codes to use in throwing errors
@@ -44,12 +44,25 @@ End Sub
 Sub DisplayError(ByVal procedure As String)
     ' Description: Displays the error details in a messagebox
     '               Includes the error type and the location in the script
-    ' Dependencies: None
+    ' Dependencies:
+    '   - Me.ErrorMessage()
     ' Inputs:
     '   - (As String)   procedure   - Text describing the mother procedure
     '                               - Usually "ModuleName - ProcedureName()"
     ' Outputs:
     '   - Displays a messagebox with error details
+    MsgBox Me.ErrorMessage(procedure), VbMsgBoxStyle.vbOKOnly + VbMsgBoxStyle.vbExclamation, "Error"
+End Sub
+
+' Public Functions
+Function ErrorMessage(ByVal procedure As String) As String
+    ' Description: Creates a standard message to display the error
+    ' Dependencies: None
+    ' Inputs:
+    '   - (As String)   procedure   - Text describing the mother procedure
+    '                               - Usually "ModuleName - ProcedureName()"
+    ' Outputs:
+    '   - (As String) The message to be displayed
     Dim msg As String
     msg = "An error occured:"
     msg = msg & vbNewLine & "-- "
@@ -57,7 +70,7 @@ Sub DisplayError(ByVal procedure As String)
         Case Me.GenericError
             msg = msg & "Custom Generic Error"
         Case Else
-            msg = msg & "Non-Custom Error"
+            msg = msg & "Standard Error"
     End Select
     msg = msg & " --" & vbNewLine
     msg = msg & Err.Description
@@ -65,6 +78,6 @@ Sub DisplayError(ByVal procedure As String)
     msg = msg & "Error location is:"
     msg = msg & vbNewLine
     msg = msg & Replace(Err.Source, vMarker, "") & vbNewLine & procedure
-    MsgBox msg, vbMsgBoxStyle.vbOKOnly + vbMsgBoxStyle.vbExclamation, "Error"
-End Sub
+    ErrorMessage = msg
+End Function
 

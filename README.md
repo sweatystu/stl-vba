@@ -12,28 +12,6 @@ All code is written assuming that the `cAppProperties` class and the `cCustomErr
 ## Writing Procedures
 Procedures should be written in a modular way with 1 *mother* procedure (the one activated by the user) and any number of *daughter* procedures (called by another procedure).
 
-The *mother* procedure should contain only calls to other procedures and should do no processing of its own. This procedure should define error handling capabilities and optimise settings if required.
-
-``` VB
-Sub motherProcedure()
-    ' Description: Sample Procedure
-    ' Dependencies: List the 
-    '   - classes
-    '   - modules or
-    '   - daughter procedures used
-    ' Inputs: None
-    ' Outputs: None
-    On Error GoTo ErrorHandle
-    app.Initialise ' Optimise settings for a fast macro
-    
-    ''''' Call various procedures and functions '''''
-
-    Exit Sub ' End procedure
-ErrorHandle:
-    custError.DisplayError "Module Name - ProcedureName()" ' Show recorded error and location in script
-End Sub
-```
-
 The *daughter* procedures should carry out all processing and in the event of an error, throw an error which is then propagated up to the *mother* procedure.
 
 ``` VB
@@ -57,6 +35,61 @@ Sub daughterProcedure()
     Exit Sub ' End Procedure
 ErrorHandle:
     custError.RaiseError "Module Name - ProcedureName()" ' Throw error and pass details to mother procedure
+End Sub
+```
+
+The *mother* procedure should contain only calls to other procedures and should do no processing of its own. This procedure should define error handling capabilities and optimise settings if required.
+
+``` VB
+Sub motherProcedure()
+    ' Description: Sample Procedure
+    ' Dependencies: List the 
+    '   - classes
+    '   - modules or
+    '   - daughter procedures used
+    ' Inputs: None
+    ' Outputs: None
+    On Error GoTo ErrorHandle
+    app.Initialise ' Optimise settings for a fast macro
+    
+    ''''' Call various procedures and functions '''''
+
+    Exit Sub ' End procedure
+ErrorHandle:
+    custError.DisplayError "Module Name - ProcedureName()" ' Show recorded error and location in script
+End Sub
+```
+
+If the macro is relatively long and would benefit from displaying progress to the user, the progress form can be used.
+
+``` VB
+Sub motherProcedure()
+    ' Description: Sample Procedure with Progress Form
+    ' Dependencies:
+    '   - cProgress class
+    '   - Other modules and classes required
+    ' Inputs: None
+    ' Outputs: None
+    On Error GoTo ErrorHandle
+    app.Initialise ' Optimise settings for a fast macro
+    progress.LoadForm "Test Macro", "Example macro to show how code could be written"
+
+    progress.AddTask "Task 1"
+    ''''' Your code here '''''
+    progress.CompleteTask
+
+    progress.AddTask "Task 2"
+    ''''' Your code here '''''
+    If complete Then
+        progress.CompleteTask
+    Else
+        progress.FailTask
+    End If
+
+    progress.CompleteMacro
+    Exit Sub
+ErrorHandle:
+    progress.DisplayError "Example - motherProcedure()"
 End Sub
 ```
 
@@ -118,6 +151,28 @@ Class needs to be initialised by running the `DefineRange` procedure and passing
 Dim rng As New cRange
 rng.DefineRange Range("A1:C3"), True, 1
 ```
+
+### cProgress
+
+Class is initialised via the `mGlobal` module as the variable `progress`.
+
+Form needs to be loaded by running the `LoadForm` procedure and passing the required arguments:
+- **Title** - Text to be used for the title of the macro
+- **Description** - Text to be used for the description of the macro
+
+``` VB
+progress.LoadForm "MacroTitle", "MacroDescription"
+
+progress.AddTask "Task Description"
+''''' Your code here '''''
+progress.CompleteTask
+
+progress.CompleteMacro
+Exit Sub
+ErrorHandle:
+progress.DisplayError "ModuleName - ProcedureName()"
+```
+
 
 ### cTable
 

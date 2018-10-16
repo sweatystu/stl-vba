@@ -5,7 +5,7 @@ Option Explicit
 '   - cIndividualColour
 '   - cGrey
 
-' Private Variables
+' Private Constants
 Private vRed As cIndividualColour
 Private vOrange As cIndividualColour
 Private vYellow As cIndividualColour
@@ -24,7 +24,7 @@ Private Sub Class_Initialize()
     ' Outputs: None
     On Error GoTo ErrorHandle
     Set vRed = New cIndividualColour
-    vRed.Initialise RGB(255, 2000, 200), RGB(240, 85, 90), RGB(255, 25, 50)
+    vRed.Initialise RGB(255, 200, 200), RGB(240, 85, 90), RGB(255, 25, 50)
     Set vOrange = New cIndividualColour
     vOrange.Initialise RGB(255, 225, 210), RGB(250, 180, 100), RGB(255, 130, 30)
     Set vYellow = New cIndividualColour

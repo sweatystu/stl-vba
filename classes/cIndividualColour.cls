@@ -2,7 +2,7 @@ Option Explicit
 
 ' Dependencies: None
 
-' Private Variables
+' Private Constants
 Private vLight As Long
 Private vPastel As Long
 Private vBold As Long
@@ -20,7 +20,7 @@ Sub Initialise(ByVal l As Long, ByVal p As Long, ByVal b As Long)
     vLight = l
     vPastel = p
     vBold = b
-    Exit Property
+    Exit Sub
 ErrorHandle:
     custErr.RaiseError "cIndividualColour - Initialise()"
 End Sub
