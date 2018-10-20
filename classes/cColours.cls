@@ -146,3 +146,31 @@ Property Get Grey() As cGrey
 ErrorHandle:
     custErr.RaiseError "cColours - Get Grey()"
 End Property
+
+Property Get White() As Long
+    ' Description: Returns the colour white
+    ' Dependencies:
+    '   - Me.Grey()
+    ' Inputs: None
+    ' Outputs:
+    '   - (As Long) The colour white
+    On Error GoTo ErrorHandle
+    White = Me.Grey.Grey256(255)
+    Exit Property
+ErrorHandle:
+    custErr.RaiseError "cColours - Get White()"
+End Property
+
+Property Get Black() As Long
+    ' Description: Returns the colour black
+    ' Dependencies:
+    '   - Me.Grey()
+    ' Inputs: None
+    ' Outputs:
+    '   - (As Long) The colour black
+    On Error GoTo ErrorHandle
+    Black = Me.Grey.Grey256(0)
+    Exit Property
+ErrorHandle:
+    custErr.RaiseError "cColours - Get Black()"
+End Property
