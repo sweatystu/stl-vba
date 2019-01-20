@@ -80,4 +80,3 @@ Function ErrorMessage(ByVal procedure As String) As String
     msg = msg & Replace(Err.Source, vMarker, "") & vbNewLine & procedure
     ErrorMessage = msg
 End Function
-

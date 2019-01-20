@@ -3,7 +3,7 @@ Option Explicit
 ' Dependencies:
 '   - cCustomErrors class
 
-' Private Variables
+' Private Constants
 Private vOrigNoSheets As Long
 Private vOrigCalcOptions As XlCalculation
 Private vOrigEvents As Boolean
@@ -262,4 +262,3 @@ Sub PreviousScreenUpdate()
 ErrorHandle:
     custErr.RaiseError "cAppProperties - PreviousScreenUpdate()"
 End Sub
-

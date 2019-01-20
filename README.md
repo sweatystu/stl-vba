@@ -119,6 +119,16 @@ Initialised via `mGlobal` module. In *daughter* procedures, use `custError.Raise
 
 Initialised in `cRange` class.
 
+### cGraph
+Needs to be initialised and then the *ChartObject* passed via the `DefineGraph` procedure.
+
+``` VB
+Dim g As New cGraph
+g.DefineGraph ActiveChart.Parent
+' or...
+g.DefineGraph ActiveSheet.ChartObjects(1)
+```
+
 ### cGrey
 
 Initialised in `cColours` class.
@@ -137,19 +147,6 @@ Needs to be initialised and then the pivot table (as a PivotTable object) passed
 ``` VB
 Dim pvt As New cPivot
 Set pvt.Pivot = ActiveSheets.PivotTables(1)
-```
-
-### cRange
-
-Class needs to be initialised by running the `DefineRange` procedure and passing the required arguments:
-- **Range** - Range of cells to be defined as the range
-- **Header** - *Optional* - True/False as to whether the range has a header row or not. Default is True.
-- **HeaderRow** - *Optional* - Data row (not the sheet row) that the header is in. Default is 1.
-    - If the selected range begins in sheet row 4, but the headers are shown in sheet row 6, the *HeaderRow* would be 3 as row 6 is the 3rd data row.
-
-``` VB
-Dim rng As New cRange
-rng.DefineRange Range("A1:C3"), True, 1
 ```
 
 ### cProgress
@@ -173,6 +170,18 @@ ErrorHandle:
 progress.DisplayError "ModuleName - ProcedureName()"
 ```
 
+### cRange
+
+Class needs to be initialised by running the `DefineRange` procedure and passing the required arguments:
+- **Range** - Range of cells to be defined as the range
+- **Header** - *Optional* - True/False as to whether the range has a header row or not. Default is True.
+- **HeaderRow** - *Optional* - Data row (not the sheet row) that the header is in. Default is 1.
+    - If the selected range begins in sheet row 4, but the headers are shown in sheet row 6, the *HeaderRow* would be 3 as row 6 is the 3rd data row.
+
+``` VB
+Dim rng As New cRange
+rng.DefineRange Range("A1:C3"), True, 1
+```
 
 ### cTable
 
@@ -193,4 +202,3 @@ Dim wb2 As New cWorkbook
 wb1.NewWorkbook
 wb2.OpenWorkbook "C:\wrkbk.xlsx"
 ```
-
