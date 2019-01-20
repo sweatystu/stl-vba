@@ -8,10 +8,10 @@ Private Const sht_cl As String = "A1"
 
 ' Public Procedures
 Sub all_sheets_visible()
-' Description: Makes all sheets in the active workbook visible
-' Dependencies: None
-' Inputs: None
-' Outputs: None
+    ' Description: Makes all sheets in the active workbook visible
+    ' Dependencies: None
+    ' Inputs: None
+    ' Outputs: None
     Dim sht As Worksheet
     For Each sht In ActiveWorkbook.Sheets
         sht.Visible = xlSheetVisible
@@ -19,11 +19,11 @@ Sub all_sheets_visible()
 End Sub
 
 Sub toggle_sheets()
-' Description: Make all sheets visible and return them to original setting when run again
-' Dependencies:
-'   - sht_name (const, As String)
-' Inputs: None
-' Outputs: None
+    ' Description: Make all sheets visible and return them to original setting when run again
+    ' Dependencies:
+    '   - sht_name (const, As String)
+    ' Inputs: None
+    ' Outputs: None
     Dim wb As Workbook
     Dim ws As Worksheet
     Set wb = ActiveWorkbook
@@ -40,15 +40,36 @@ Sub toggle_sheets()
     End If
 End Sub
 
+Sub HideGridlines()
+    ' Description: Remove gridlines from all visible sheets
+    ' Dependencies: None
+    ' Inputs: None
+    ' Outputs: None
+    Dim ws As Worksheet
+    Dim curws As Worksheet
+    On Error GoTo ErrorHandle
+    Set curws = ActiveSheet
+    For Each ws In ActiveWorkbook.Sheets
+        If ws.Visible = xlSheetVisible Then
+            ws.Select
+            ActiveWindow.DisplayGridlines = False
+        End If
+    Next ws
+    curws.Select
+    Exit Sub
+ErrorHandle:
+    custErr.DisplayError "mSheets - HideGridlines()"
+End Sub
+
 ' Private Procedures
 Private Sub record_sheet_status(ByRef wb As Workbook)
-' Description: Records the status of all sheets in the workbook and records them in a new sheet
-' Dependencies:
-'   - sht_name (const, As String)
-'   - sht_cl (const, As String)
-' Inputs:
-'   wb  (As Workbook)   The workbook containing the sheets to record the status of
-' Outputs: None
+    ' Description: Records the status of all sheets in the workbook and records them in a new sheet
+    ' Dependencies:
+    '   - sht_name (const, As String)
+    '   - sht_cl (const, As String)
+    ' Inputs:
+    '   wb  (As Workbook)   The workbook containing the sheets to record the status of
+    ' Outputs: None
     Dim record As Worksheet
     Dim ws As Worksheet
     Dim cl As Range
@@ -68,13 +89,13 @@ Private Sub record_sheet_status(ByRef wb As Workbook)
 End Sub
 
 Private Sub return_sheet_status(ByRef wb As Workbook, ByRef record As Worksheet)
-' Description: Return sheets to original setting
-' Dependencies:
-'   - sht_cl  (const, As String)
-' Inputs:
-'   - wb        (As Workbook)   The workbook containing the sheets to act on
-'   - record    (As Worksheet)  The worksheet containing the original sheet names and status
-' Outputs: None
+    ' Description: Return sheets to original setting
+    ' Dependencies:
+    '   - sht_cl  (const, As String)
+    ' Inputs:
+    '   - wb        (As Workbook)   The workbook containing the sheets to act on
+    '   - record    (As Worksheet)  The worksheet containing the original sheet names and status
+    ' Outputs: None
     Dim cl As Range
     Dim i As Long
     Set cl = record.Range(sht_cl)

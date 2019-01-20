@@ -132,12 +132,12 @@ Sub FormatChartGeneral()
     On Error GoTo ErrorHandle
     With Me.Graph.Chart
         With .ChartArea
-            .Line.Visible = msoFalse
-            .Fill.BackColor.RGB = vColours.White
+            .Border.LineStyle = xlNone
+            .Interior.Color = vColours.White
         End With
         With .PlotArea
-            .Line.Visible = msoFalse
-            .Fill.BackColor.RGB = vColours.White
+            .Border.LineStyle = xlNone
+            .Interior.Color = vColours.White
         End With
     End With
     Exit Sub
